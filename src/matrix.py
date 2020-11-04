@@ -172,3 +172,45 @@ class Matrix():
     #     if left_mat.elements != identity.elements:
     #     return 'Error: cannot invert a singular matrix'
     #     return inverse_mat
+
+
+
+    def determinant(self):
+        reduced_matrix = self.copy()
+        row_index = 0
+        scalar_nums = 1
+        swap_count = 0
+        for col_index in range(reduced_matrix.num_cols):
+            pivot_row = reduced_matrix.get_pivot_row(col_index)
+            if pivot_row != None:
+                if pivot_row != row_index:
+                    reduced_matrix = reduced_matrix.swap_rows(pivot_row, row_index)
+                    swap_count += 1
+                new_matrix = self.copy()
+                col_value = new_matrix.check_value(row_index)
+                for value in range(len(new_matrix.elements[row_index])):
+                    new_matrix.elements[row_index][value] = int(abs(new_matrix.elements[row_index][value]/col_value))
+                    scalar_nums *= new_matrix.elements[row_index][value]
+                reduced_matrix = reduced_matrix.clear_below(row_index)
+                reduced_matrix = reduced_matrix.clear_above(row_index)
+                row_index += 1
+        return reduced_matrix
+
+    def exponent(self, num):
+        final_matrix = self.copy()
+        initial_matrix = self.copy()
+        for i in range(num - 1):
+            final_matrix = final_matrix.matrix_multiply(initial_matrix)
+        return final_matrix
+    
+    def __add__(self, c):
+        return self.add(c)
+    def __sub__(self, c):
+        return self.subtract(c)
+    def __mul__(self, scalar):
+        return self.scalar_multiply(scalar)
+    def __matmul__(self, matrix2):
+        return self.matrix_multiply(matrix2)
+    def __eq__(self, matrix2):
+        return self.is_equal(matrix2)
+    
